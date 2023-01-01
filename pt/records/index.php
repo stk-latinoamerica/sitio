@@ -10,19 +10,17 @@
 <body>
   <div class="header">
   <h1>
-    STK Latam
+    STK LATAM
   </h1>
     <br />
     <p style="text-align: center">
-    Recordes de corridas
+    Recordes
     </p>
   </div>
   <div class="content">
     <h2>
       Recordes
     </h2>
-    <p>Utilize as opções seguintes para filtrar os resultados da forma desejada.
-    </p>
 
 <?php
 
@@ -31,24 +29,6 @@ $reverse= $_POST["reverse"] ?? 'normal';
 $mode	= $_POST["mode"] ?? 'normal';
 $tracks	= $_POST["venue"] ?? 'default';
 
-echo "<p>Abaixo seguem os recordes de corridas ";
-if ($mode == 'normal') 
-	echo "normais (sem itens)";
-	else echo "sem itens";
-echo " nas pistas";
-if ($tracks == 'default')
-	echo " oficiais";
-	else if ($tracks == 'addons')
-		echo " complementares";
-		else echo " complementares mais recomendadas";
-echo ", com sentido "; 
-if ($reverse == 'normal') 
-	echo "normal";
-	else echo "reverso";
-echo " e ";
-if ($laps == 'dlaps') 
-	echo "o número padrão de voltas.</p>";
-	else echo $laps . " voltas.</p>";
 
 ?>
 
@@ -79,17 +59,37 @@ if ($laps == 'dlaps')
 	  <option value="assorted_addons">Complementares especiais</option>
         </h4>
 
-<input type="submit" value="Filtrar"></div>
+<input style='margin-top: 0.5rem' type="submit" value="Filtrar"></div>
 <hr>
-<h2>Pistas oficiais</h2>
 
- <table>
-    <thead>
-        <tr> <th>Pista</th> <th>Voltas</th> <th>Jogador</th> <th>Tempo</th> <th>Data</th> </tr>
-    </thead>
     
 
 <?php
+
+echo "<p style='text-align: center'><strong>⭐️ Modo: ";
+if ($mode == 'normal') 
+	echo "normal";
+	else echo "sem itens";
+echo " ⭐️ Pistas: ";
+if ($tracks == 'default')
+	echo " oficiais";
+	else if ($tracks == 'addons')
+		echo " complementares";
+		else echo " mais recomendadas";
+echo " ⭐️ Sentido: "; 
+if ($reverse == 'normal') 
+	echo "normal";
+	else echo "reverso";
+echo " ⭐️ Voltas: ";
+if ($laps == 'dlaps') 
+	echo "padrão";
+	else echo $laps;
+echo '</strong></p>';
+
+echo '<table>
+    <thead>
+        <tr> <th>Pista</th> <th>Voltas</th> <th>Jogador</th> <th>Tempo</th> <th>Data</th> </tr>
+    </thead>';
 
 class MyDB extends SQLite3
 {
@@ -116,11 +116,11 @@ $result = $db->query("SELECT fullname, venue, laps, username, (CASE WHEN (result
 while($row = $result->fetchArray()){
     echo "<tr><td> <a href='track.php?track=" . $row['venue'] . "' name=\"track\" value=\"" . $row['venue'] ."\" > ". $row['fullname'] . "</a><td>" . $row['laps'] . "<td>" . $row['username'] . "<td>" . $row['timing'] . "<td>" . $row['time'] . "</td></tr>";
 }
+echo '</table>';
 
 ?>
 
 </form>
 
 
-</table>
 </div>

@@ -10,36 +10,20 @@
 <body>
   <div class="header">
   <h1>
-    STK Latam
+    STK LATAM 
   </h1>
     <br />
     <p style="text-align: center">
-    Recordes de corridas
+    Recordes
     </p>
   </div>
   <div class="content">
-    <h2>
-      Recordes
-    </h2>
-    <p>Utilize as opções seguintes para filtrar os resultados da forma desejada.
-    </p>
-
+    
 <?php
-class MyDB extends SQLite3
-{
-	function __construct()
-	{
-		$this->open($_SERVER["DOCUMENT_ROOT"] . '/assets/database.db', SQLITE3_OPEN_READONLY);
-	}
-}
 
-function setTrack($getvar) {
-	if ($getvar)
-	{
-		return $_GET["track"];
-	}
-	return $_POST["track"];
-}
+include $_SERVER["DOCUMENT_ROOT"] . '/assets/records_track_guard.php';
+
+sanityCheck($_GET['track']);
 
 $laps	= $_POST["laps"] ?? 'dlaps';
 $reverse= $_POST["reverse"] ?? 'normal'; 
@@ -49,22 +33,17 @@ $track	= setTrack($_GET['track']) ?? 'abyss';
 $db = new MyDB();
 
 $result = $db->query("SELECT fullname, laps, username, (CASE WHEN (result%60 < 10) THEN (CAST(result/60 as INT) || ':0' || CAST(ROUND(MOD(result,60),4) as TEXT)) ELSE (CAST(result/60 AS INT)) || ':' || CAST(result%60 AS TEXT) END) as timing, time FROM (recordsMIAMI INNER JOIN track_data ON recordsMIAMI.venue = track_data.name) WHERE (venue = '" . $track  . "' AND laps = " . $laps . " AND mode = '" . $mode . "' AND reverse = '" . $reverse . "') GROUP BY username HAVING MIN(result) ORDER BY result ASC LIMIT 20") ?? '';
+$fullname = $db->query('SELECT fullname FROM track_data WHERE name = \'' . $track . '\'');
 
 
-echo "<p>Abaixo seguem os recordes de corridas ";
-if ($mode == 'normal') 
-	echo "normais (sem itens)";
-	else echo "sem itens";
-echo " na pista " . $track;
-echo ", com sentido "; 
-if ($reverse == 'normal') 
-	echo "normal";
-	else echo "reverso";
-echo " e ";
-if ($laps == 'dlaps') 
-	echo "o número padrão de voltas.</p>";
-	else echo $laps . " voltas.</p>";
+echo "<h2>Recordes da pista <strong>";
+while ($row = $fullname->fetchArray())
+{
+	echo $row['fullname'];
+}
+echo  "</strong></h2>";
 
+echo "<img src='/assets/screenshots/" . $track . ".png' > ";
 ?>
 
 <div class="box95 rowbox records_form">
@@ -87,38 +66,51 @@ if ($laps == 'dlaps')
         </select>
         </h4>
 <?php	
-	if ($_GET['track'])
+/*f ($_GET['track'])
 	{
 		echo "<input type='hidden' name=track value=" . $_GET['track'] . ">";
 	}
 	else 
 	{
 		echo "<input type='hidden' name=track value=" . $_POST['track'] . ">";
-	}
+	} */
+	echo "<input type='hidden' name=track value=" . $track . ">";
 
 ?>
 
 <input type="submit" value="Filtrar"></div>
 </form>
 <hr>
-<h2>Pistas oficiais</h2>
 
- <table>
-    <thead>
-        <tr> <th>Jogador</th> <th>Voltas</th> <th>Tempo</th> <th>Data</th> </tr>
-    </thead>
     
 
 <?php
 
+echo "<strong><p style='text-align: center'> ⭐️ Modo: ";
+if ($mode == 'normal') 
+	echo "normal (com itens)";
+	else echo "sem itens";
+echo " ⭐️ Sentido: "; 
+if ($reverse == 'normal') 
+	echo "normal";
+	else echo "reverso";
+echo " ⭐️ Voltas: ";
+if ($laps == 'dlaps') 
+	echo "quantidade padrão";
+	else echo $laps;
+echo '</p></strong>';
+
+echo '<table>
+    <thead>
+        <tr> <th>Jogador</th> <th>Voltas</th> <th>Tempo</th> <th>Data</th> </tr>
+    </thead>';
 
 while($row = $result->fetchArray()){
     echo "<td>" . $row['username'] . "<td>" . $row['laps'] . "<td>" . $row['timing'] . "<td>" . $row['time'] . "</td></tr>";
 }
-
+echo '</table>';
 ?>
 
 
 
-</table>
 </div>
