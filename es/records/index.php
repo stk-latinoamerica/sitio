@@ -41,8 +41,8 @@ $tracks	= $_POST["venue"] ?? 'default';
         </h4>
 
         <h4>Modo:
-        <input type="radio" name="mode" value="normal"  >Normal
-        <input type="radio" name="mode" value="time-trial" checked >Contrarreloj
+        <input type="radio" name="mode" value="normal" checked >Normal
+        <input type="radio" name="mode" value="time-trial" >Contrarreloj
         </h4>
 
         <h4>Vueltas:
@@ -111,7 +111,7 @@ $db = new MyDB();
 
 
 
-$result = $db->query("SELECT fullname, venue, laps, username, (CASE WHEN (result%60 < 10) THEN (CAST(result/60 as INT) || ':0' || CAST(ROUND(MOD(result,60),4) as TEXT)) ELSE (CAST(result/60 AS INT)) || ':' || CAST(result%60 AS TEXT) END) as timing, time FROM (recordsMIAMI INNER JOIN track_data ON recordsMIAMI.venue = track_data.name) WHERE (venue " . setVenue($tracks)  . " AND laps = " . $laps . " AND mode = '" . $mode . "' AND reverse = '" . $reverse . "') GROUP BY venue HAVING MIN(result)") ?? '';
+$result = $db->query("SELECT fullname, venue, laps, username, (CASE WHEN (result%60 < 10) THEN (CAST(result/60 as INT) || ':0' || CAST(ROUND(MOD(result,60),4) as TEXT)) ELSE (CAST(result/60 AS INT)) || ':' || CAST(result%60 AS TEXT) END) as timing, time FROM 'ALL' WHERE (venue " . setVenue($tracks)  . " AND laps = " . $laps . " AND mode = '" . $mode . "' AND reverse = '" . $reverse . "') GROUP BY venue HAVING MIN(result)") ?? '';
 
 while($row = $result->fetchArray()){
     echo "<tr><td> <a href='track.php?track=" . $row['venue'] . "' name=\"track\" value=\"" . $row['venue'] ."\" > ". $row['fullname'] . "</a><td>" . $row['laps'] . "<td>" . $row['username'] . "<td>" . $row['timing'] . "<td>" . $row['time'] . "</td></tr>";

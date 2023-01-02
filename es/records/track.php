@@ -32,7 +32,7 @@ $track	= setTrack($_GET['track']) ?? 'abyss';
 
 $db = new MyDB();
 
-$result = $db->query("SELECT fullname, laps, username, (CASE WHEN (result%60 < 10) THEN (CAST(result/60 as INT) || ':0' || CAST(ROUND(MOD(result,60),4) as TEXT)) ELSE (CAST(result/60 AS INT)) || ':' || CAST(result%60 AS TEXT) END) as timing, time FROM (recordsMIAMI INNER JOIN track_data ON recordsMIAMI.venue = track_data.name) WHERE (venue = '" . $track  . "' AND laps = " . $laps . " AND mode = '" . $mode . "' AND reverse = '" . $reverse . "') GROUP BY username HAVING MIN(result) ORDER BY result ASC LIMIT 20") ?? '';
+$result = $db->query("SELECT fullname, laps, username, (CASE WHEN (result%60 < 10) THEN (CAST(result/60 as INT) || ':0' || CAST(ROUND(MOD(result,60),4) as TEXT)) ELSE (CAST(result/60 AS INT)) || ':' || CAST(result%60 AS TEXT) END) as timing, time FROM 'ALL' WHERE (venue = '" . $track  . "' AND laps = " . $laps . " AND mode = '" . $mode . "' AND reverse = '" . $reverse . "') GROUP BY username HAVING MIN(result) ORDER BY result ASC LIMIT 20") ?? '';
 $fullname = $db->query('SELECT fullname FROM track_data WHERE name = \'' . $track . '\'');
 
 
@@ -55,8 +55,8 @@ echo "<img src='/assets/screenshots/" . $track . ".jpg' > ";
         </h4>
 
         <h4>Modo:
-        <input type="radio" name="mode" value="normal"  >Normal
-        <input type="radio" name="mode" value="time-trial" checked >Contrarreloj
+        <input type="radio" name="mode" value="normal" checked >Normal
+        <input type="radio" name="mode" value="time-trial" >Contrarreloj
         </h4>
 
         <h4>Vueltas:

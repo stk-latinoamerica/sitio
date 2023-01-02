@@ -25,6 +25,7 @@ include $_SERVER["DOCUMENT_ROOT"] . '/assets/records_track_guard.php';
 
 sanityCheck($_GET['track']);
 
+$servers= $_POST["servers"] ?? 'ALL';
 $laps	= $_POST["laps"] ?? 'dlaps';
 $reverse= $_POST["reverse"] ?? 'normal'; 
 $mode	= $_POST["mode"] ?? 'normal';
@@ -32,7 +33,7 @@ $track	= setTrack($_GET['track']) ?? 'abyss';
 
 $db = new MyDB();
 
-$result = $db->query("SELECT fullname, laps, username, (CASE WHEN (result%60 < 10) THEN (CAST(result/60 as INT) || ':0' || CAST(ROUND(MOD(result,60),4) as TEXT)) ELSE (CAST(result/60 AS INT)) || ':' || CAST(result%60 AS TEXT) END) as timing, time FROM (recordsMIAMI INNER JOIN track_data ON recordsMIAMI.venue = track_data.name) WHERE (venue = '" . $track  . "' AND laps = " . $laps . " AND mode = '" . $mode . "' AND reverse = '" . $reverse . "') GROUP BY username HAVING MIN(result) ORDER BY result ASC LIMIT 20") ?? '';
+$result = $db->query("SELECT fullname, laps, username, (CASE WHEN (result%60 < 10) THEN (CAST(result/60 as INT) || ':0' || CAST(ROUND(MOD(result,60),4) as TEXT)) ELSE (CAST(result/60 AS INT)) || ':' || CAST(result%60 AS TEXT) END) as timing, time FROM '" . $servers . "' WHERE (venue = '" . $track  . "' AND laps = " . $laps . " AND mode = '" . $mode . "' AND reverse = '" . $reverse . "') GROUP BY username HAVING MIN(result) ORDER BY result ASC LIMIT 20") ?? '';
 $fullname = $db->query('SELECT fullname FROM track_data WHERE name = \'' . $track . '\'');
 
 
@@ -49,14 +50,20 @@ echo "<img src='/assets/screenshots/" . $track . ".jpg' > ";
 <div class="box95 rowbox records_form">
 <form action ="track.php" method="POST">
 
+	<h4>Servidores:
+        <input type="radio" name="servers" value="MIAMI" >Miami
+        <input type="radio" name="servers" value="BRASIL"  >Brasil
+        <input type="radio" name="servers" value="ALL" checked>Todos
+        </h4>
+
         <h4>Sentido:
         <input type="radio" name="reverse" value="normal"  checked>Normal
         <input type="radio" name="reverse" value="reverse"  >Reverso
         </h4>
 
         <h4>Modo:
-        <input type="radio" name="mode" value="time-trial"  >Corrida sem itens
         <input type="radio" name="mode" value="normal" checked >Corrida normal
+        <input type="radio" name="mode" value="time-trial"  >Corrida sem itens
         </h4>
 
         <h4>Número de voltas:
