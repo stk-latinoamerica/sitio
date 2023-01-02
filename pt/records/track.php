@@ -43,7 +43,7 @@ while ($row = $fullname->fetchArray())
 }
 echo  "</strong></h2>";
 
-echo "<img src='/assets/screenshots/" . $track . ".png' > ";
+echo "<img src='/assets/screenshots/" . $track . ".jpg' > ";
 ?>
 
 <div class="box95 rowbox records_form">
