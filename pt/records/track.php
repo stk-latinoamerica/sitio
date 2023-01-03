@@ -50,20 +50,21 @@ echo "<img src='/assets/screenshots/" . $track . ".jpg' > ";
 <div class="box95 rowbox records_form">
 <form action ="track.php" method="POST">
 
+	<?php echo "<input type='hidden' name=track value='" . $track . "'>" ?>;
 	<h4>Servidores:
-        <input type="radio" name="servers" value="MIAMI" >Miami
-        <input type="radio" name="servers" value="BRASIL"  >Brasil
-        <input type="radio" name="servers" value="ALL" checked>Todos
+        <input type="radio" name="servers" value="MIAMI" <?php if ($servers == 'MIAMI') echo 'checked';?> >Miami
+        <input type="radio" name="servers" value="BRASIL" <?php if ($servers == 'BRASIL') echo 'checked';?> >Brasil
+        <input type="radio" name="servers" value="ALL" <?php if ($servers == 'ALL') echo 'checked';?> >Todos
         </h4>
 
         <h4>Sentido:
-        <input type="radio" name="reverse" value="normal"  checked>Normal
-        <input type="radio" name="reverse" value="reverse"  >Reverso
+        <input type="radio" name="reverse" value="normal"  <?php if ($reverse == 'normal') echo 'checked';?> >Normal
+        <input type="radio" name="reverse" value="reverse"  <?php if ($reverse == 'reverse') echo 'checked';?> >Reverso
         </h4>
 
         <h4>Modo:
-        <input type="radio" name="mode" value="normal" checked >Corrida normal
-        <input type="radio" name="mode" value="time-trial"  >Corrida sem itens
+        <input type="radio" name="mode" value="normal" <?php if ($mode == 'normal') echo 'checked'; ?> >Corrida normal
+        <input type="radio" name="mode" value="time-trial" <?php if ($mode == 'time-trial') echo 'checked'; ?> >Corrida sem itens
         </h4>
 
         <h4>Número de voltas:
@@ -72,18 +73,6 @@ echo "<img src='/assets/screenshots/" . $track . ".jpg' > ";
         <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option><option value="36">36</option><option value="37">37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option><option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option><option value="46">46</option><option value="47">47</option><option value="48">48</option><option value="49">49</option><option value="50">50</option>
         </select>
         </h4>
-<?php	
-/*f ($_GET['track'])
-	{
-		echo "<input type='hidden' name=track value=" . $_GET['track'] . ">";
-	}
-	else 
-	{
-		echo "<input type='hidden' name=track value=" . $_POST['track'] . ">";
-	} */
-	echo "<input type='hidden' name=track value=" . $track . ">";
-
-?>
 
 <input type="submit" value="Filtrar"></div>
 </form>
@@ -103,9 +92,13 @@ if ($reverse == 'normal')
 	else echo "reverso";
 echo " ⭐️ Voltas: ";
 if ($laps == 'dlaps') 
-	echo "quantidade padrão";
+	echo "padrão";
 	else echo $laps;
 echo '</p></strong>';
+
+echo '<p style=\'text-align: center\'><strong>⭐️ Servidores: ';
+if ($servers == 'ALL') {echo 'todos';}
+	else {echo ucfirst(strtolower($servers));} echo ' ⭐️</p></strong>';
 
 echo '<table>
     <thead>

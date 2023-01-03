@@ -24,6 +24,7 @@
 
 <?php
 
+$servers= $_POST["servers"] ?? 'ALL';
 $laps	= $_POST["laps"] ?? 'dlaps';
 $reverse= $_POST["reverse"] ?? 'normal'; 
 $mode	= $_POST["mode"] ?? 'normal';
@@ -35,14 +36,20 @@ $tracks	= $_POST["venue"] ?? 'default';
 <div class="box95 rowbox records_form">
 <form action ="index.php" method="POST">
 
+        <h4>Servidores:
+        <input type="radio" name="servers" value="MIAMI" <?php if ($servers == 'MIAMI') echo 'checked'; ?> >Miami
+        <input type="radio" name="servers" value="BRASIL" <?php if ($servers == 'BRASIL') echo 'checked'; ?> >Brasil
+        <input type="radio" name="servers" value="ALL" <?php if ($servers == 'ALL') echo 'checked'; ?> >Todos
+        </h4>
+
         <h4>Dirección:
-        <input type="radio" name="reverse" value="normal"  checked>Normal
-        <input type="radio" name="reverse" value="reverse"  >Inversa
+        <input type="radio" name="reverse" value="normal"  <?php if ($reverse == 'normal') echo 'checked'; ?> >Normal
+        <input type="radio" name="reverse" value="reverse"  <?php if ($reverse == 'reverse') echo 'checked'; ?> >Inversa
         </h4>
 
         <h4>Modo:
-        <input type="radio" name="mode" value="normal" checked >Normal
-        <input type="radio" name="mode" value="time-trial" >Contrarreloj
+        <input type="radio" name="mode" value="normal" <?php if ($mode == 'normal') echo 'checked'; ?> >Normal
+        <input type="radio" name="mode" value="time-trial" <?php if ($mode == 'time-trial') echo 'checked'; ?> >Contrarreloj
         </h4>
 
         <h4>Vueltas:
@@ -68,23 +75,24 @@ $tracks	= $_POST["venue"] ?? 'default';
 
 echo "<p style='text-align: center'><strong>⭐️ Modo: ";
 if ($mode == 'normal') 
-	echo "normal";
-	else echo "contrarreloj";
+	echo "Normal";
+	else echo "Contrarreloj";
 echo " ⭐️ Pistas: ";
 if ($tracks == 'default')
 	echo " estándar";
 	else if ($tracks == 'addons')
-		echo " complementos todos";
-		else echo " complementos evaluados";
+		echo " Complementos todos";
+		else echo " Complementos evaluados";
 echo " ⭐️ Dirección: "; 
 if ($reverse == 'normal') 
-	echo "normal";
-	else echo "inversa";
+	echo "Normal";
+	else echo "Inversa";
 echo " ⭐️ Vueltas: ";
 if ($laps == 'dlaps') 
-	echo "estándar";
+	echo "Estándar";
 	else echo $laps;
 echo '</strong></p>';
+echo '<p style=\'text-align: center\'><strong>⭐️ Servidores: '; if ($servers == 'ALL') {echo 'Todos';} else {echo ucfirst(strtolower($servers));} echo ' ⭐️</p></strong>';
 
 echo '<table>
     <thead>
@@ -111,7 +119,7 @@ $db = new MyDB();
 
 
 
-$result = $db->query("SELECT fullname, venue, laps, username, (CASE WHEN (result%60 < 10) THEN (CAST(result/60 as INT) || ':0' || CAST(ROUND(MOD(result,60),4) as TEXT)) ELSE (CAST(result/60 AS INT)) || ':' || CAST(result%60 AS TEXT) END) as timing, time FROM 'ALL' WHERE (venue " . setVenue($tracks)  . " AND laps = " . $laps . " AND mode = '" . $mode . "' AND reverse = '" . $reverse . "') GROUP BY venue HAVING MIN(result)") ?? '';
+$result = $db->query("SELECT fullname, venue, laps, username, (CASE WHEN (result%60 < 10) THEN (CAST(result/60 as INT) || ':0' || CAST(ROUND(MOD(result,60),4) as TEXT)) ELSE (CAST(result/60 AS INT)) || ':' || CAST(result%60 AS TEXT) END) as timing, time FROM '" . $servers . "' WHERE (venue " . setVenue($tracks)  . " AND laps = " . $laps . " AND mode = '" . $mode . "' AND reverse = '" . $reverse . "') GROUP BY venue HAVING MIN(result)") ?? '';
 
 while($row = $result->fetchArray()){
     echo "<tr><td> <a href='track.php?track=" . $row['venue'] . "' name=\"track\" value=\"" . $row['venue'] ."\" > ". $row['fullname'] . "</a><td>" . $row['laps'] . "<td>" . $row['username'] . "<td>" . $row['timing'] . "<td>" . $row['time'] . "</td></tr>";
