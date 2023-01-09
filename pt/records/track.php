@@ -50,7 +50,7 @@ echo "<img src='/assets/screenshots/" . $track . ".jpg' > ";
 <div class="box95 rowbox records_form">
 <form action ="track.php" method="POST">
 
-	<?php echo "<input type='hidden' name=track value='" . $track . "'>" ?>;
+	<?php echo "<input type='hidden' name=track value='" . $track . "'>" ?>
 	<h4>Servidores:
         <input type="radio" name="servers" value="MIAMI" <?php if ($servers == 'MIAMI') echo 'checked';?> >Miami
         <input type="radio" name="servers" value="BRASIL" <?php if ($servers == 'BRASIL') echo 'checked';?> >Brasil
