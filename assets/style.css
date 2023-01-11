@@ -110,14 +110,11 @@
 	}
 	/* records checkboxes */
 	.modeLi {
-	  width: auto;
-	  height: 1rem;
-	  display: block; 
-	  align-items: center;
+	  display: inline;
 	  position: relative;
 	}
 	.modeLabel {
-	  width: 20px;
+	  width: 7rem;
 	  height: 20px;
 	  position: relative;
 	  display: inline-block;
@@ -125,8 +122,6 @@
 	} 
 	.modeLabel span {
 	  position: absolute;
-	  min-width: 200px;
-	  margin-left: 0.25rem;
 	  top: 0.3rem;
 	}
 	.modeBox, .reverseBox {
@@ -137,7 +132,6 @@
 	  border: 2px solid grey;
 	  background: lightgrey;
 	  transition: all 0.4s;
-	  margin-left: 0.5rem;
 	  position: relative;
 	  vertical-align: bottom;
 	  bottom: -5px;

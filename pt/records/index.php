@@ -1,3 +1,16 @@
+<?php
+
+include $_SERVER["DOCUMENT_ROOT"] . '/assets/records_index_bracers.php';
+
+$servers= setServers($_POST["servers"]);
+$laps	= setLaps($_POST["laps"]);
+$reverse= setReverse($_POST["reverse"]); 
+$mode	= setMode($_POST["mode"]);
+$tracks	= setTracks($_POST["venue"]);
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="pt_BR">
 <head>
@@ -22,24 +35,7 @@
       Recordes
     </h2>
 
-<?php
-
-function setLaps($laps)
-{
-	if (!($laps > 0 && $laps <= 20) && ($laps != 50)) return 'dlaps';
-	else return $laps;
-}
-
-$servers= $_POST["servers"] ?? 'ALL';
-$laps	= setLaps($_POST["laps"]);
-$reverse= $_POST["reverse"] ?? 'normal'; 
-$mode	= $_POST["mode"] ?? 'normal';
-$tracks	= $_POST["venue"] ?? 'default';
-
-
-?>
-
-<div class="box95 rowbox records_form">
+<div>
 <form action ="index.php" method="POST">
 
         <h4>Servidores:
@@ -50,14 +46,14 @@ $tracks	= $_POST["venue"] ?? 'default';
 
 	<input type="hidden" name="reverse" value="normal" />
 	<input type="hidden" name="mode" value="normal" />
-	<ul style="margin-left: -5rem">
-	  <h4><li class="modeLi">Sentido:
-	    <input type="checkbox" name="reverse" class="reverseBox" value="reverse" <?php if ($reverse == 'reverse') echo 'checked' ?>>
-	    <label for="reverse" class="modeLabel"><span class="on">Normal</span><span class="off">Reverso</ span></label>
-	  </li></h4>
+	<ul>
 	  <h4><li class="modeLi">Modo:
 	    <input type="checkbox" name="mode" class="modeBox" value="time-trial" <?php if ($mode == 'time-trial') echo 'checked' ?>>
 	    <label for="mode" class="modeLabel"><span class="on">Normal</span><span class="off">Sem itens</ span></label>
+	  </li>
+	  <li class="modeLi">Sentido:
+	    <input type="checkbox" name="reverse" class="reverseBox" value="reverse" <?php if ($reverse == 'reverse') echo 'checked' ?>>
+	    <label for="reverse" class="modeLabel"><span class="on">Normal</span><span class="off">Reverso</ span></label>
 	  </li></h4>
 	</ul>
 	
@@ -128,11 +124,14 @@ $db = new MyDB();
 
 $result = $db->query("SELECT fullname, venue, laps, username, (CASE WHEN (result%60 < 10) THEN (CAST(result/60 as INT) || ':0' || CAST(ROUND(MOD(result,60),4) as TEXT)) ELSE (CAST(result/60 AS INT)) || ':' || CAST(result%60 AS TEXT) END) as timing, time FROM '" . $servers . "' WHERE (venue " . setVenue($tracks)  . " AND laps = " . $laps . " AND mode = '" . $mode . "' AND reverse = '" . $reverse . "') GROUP BY venue HAVING MIN(result)") ?? '';
 
-while($row = $result->fetchArray()){
-    echo "<tr><td> <a href='track.php?track=" . $row['venue'] . "' name=\"track\" value=\"" . $row['venue'] ."\" > ". $row['fullname'] . "</a><td>" . $row['laps'] . "<td>" . $row['username'] . "<td>" . $row['timing'] . "<td>" . $row['time'] . "</td></tr>";
+//if ($result->numRows() > 0)
+{
+	while($row = $result->fetchArray()){
+		echo "<tr><td> <a href='track.php?track=" . $row['venue'] . "&servers=" . $servers . "&laps=" . $laps . "&reverse=" . $reverse . "&mode=" . $mode . "' name=\"track\" value=\"" . $row['venue'] ."\" > ". $row['fullname'] . "</a><td>" . $row['laps'] . "<td>" . $row['username'] . "<td>" . $row['timing'] . "<td>" . $row['time'] . "</td></tr>";
+	}
+	echo '</table>';
 }
-echo '</table>';
-
+//else echo "<h4>Nenhum resultado</h4>";
 ?>
 
 </form>

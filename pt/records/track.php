@@ -21,15 +21,13 @@
     
 <?php
 
-include $_SERVER["DOCUMENT_ROOT"] . '/assets/records_track_guard.php';
+include $_SERVER["DOCUMENT_ROOT"] . '/assets/records_track_bracers.php';
 
-sanityCheck($_GET['track']);
-
-$servers= $_POST["servers"] ?? 'ALL';
-$laps	= $_POST["laps"] ?? 'dlaps';
-$reverse= $_POST["reverse"] ?? 'normal'; 
-$mode	= $_POST["mode"] ?? 'normal';
-$track	= setTrack($_GET['track']) ?? 'abyss';
+$servers= setServers($_GET["servers"], $_POST["servers"]) ?? 'ALL';
+$laps	= setLaps($_GET["laps"], $_POST["laps"]) ?? 'dlaps';
+$reverse= setReverse($_GET["reverse"], $_POST["reverse"]) ?? 'normal';
+$mode	= setMode($_GET["mode"], $_POST["mode"]) ?? 'normal';
+$track	= trackCheck(setTrack($_GET['track'])) ?? 'abyss';
 
 $db = new MyDB();
 
@@ -47,7 +45,7 @@ echo  "</strong></h2>";
 echo "<img src='/assets/screenshots/" . $track . ".jpg' > ";
 ?>
 
-<div class="box95 rowbox records_form">
+<div>
 <form action ="track.php" method="POST">
 
 	<?php echo "<input type='hidden' name=track value='" . $track . "'>" ?>
@@ -57,22 +55,24 @@ echo "<img src='/assets/screenshots/" . $track . ".jpg' > ";
         <input type="radio" name="servers" value="ALL" <?php if ($servers == 'ALL') echo 'checked';?> >Todos
         </h4>
 
-        <h4>Sentido:
-        <input type="radio" name="reverse" value="normal"  <?php if ($reverse == 'normal') echo 'checked';?> >Normal
-        <input type="radio" name="reverse" value="reverse"  <?php if ($reverse == 'reverse') echo 'checked';?> >Reverso
-        </h4>
-
-        <h4>Modo:
-        <input type="radio" name="mode" value="normal" <?php if ($mode == 'normal') echo 'checked'; ?> >Corrida normal
-        <input type="radio" name="mode" value="time-trial" <?php if ($mode == 'time-trial') echo 'checked'; ?> >Corrida sem itens
-        </h4>
+	<input type="hidden" name="reverse" value="normal" />
+	<input type="hidden" name="mode" value="normal" />
+	<ul>
+	  <h4><li class="modeLi">Modo:
+	    <input type="checkbox" name="mode" class="modeBox" value="time-trial" <?php if ($mode == 'time-trial') echo 'checked' ?>>
+	    <label for="mode" class="modeLabel"><span class="on">Normal</span><span class="off">Sem itens</ span></label>
+	  </li>
+	  <li class="modeLi">Sentido:
+	    <input type="checkbox" name="reverse" class="reverseBox" value="reverse" <?php if ($reverse == 'reverse') echo 'checked' ?>>
+	    <label for="reverse" class="modeLabel"><span class="on">Normal</span><span class="off">Reverso</ span></label>
+	  </li></h4>
+	</ul>
+	
 
         <h4>Número de voltas:
-        <select name="laps">
-            <option value="dlaps">Quantidade padrão</option>
-        <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option><option value="36">36</option><option value="37">37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option><option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option><option value="46">46</option><option value="47">47</option><option value="48">48</option><option value="49">49</option><option value="50">50</option>
-        </select>
+	<input type="number" name="laps" min="0" max="20"> 	<input type="checkbox" name="laps" value="50"> 50 voltas	    
         </h4>
+
 
 <input type="submit" value="Filtrar"></div>
 </form>
@@ -100,15 +100,17 @@ echo '<p style=\'text-align: center\'><strong>⭐️ Servidores: ';
 if ($servers == 'ALL') {echo 'todos';}
 	else {echo ucfirst(strtolower($servers));} echo ' ⭐️</p></strong>';
 
-echo '<table>
-    <thead>
-        <tr> <th>Jogador</th> <th>Voltas</th> <th>Tempo</th> <th>Data</th> </tr>
-    </thead>';
+{
+	echo '<table>
+		<thead>
+			<tr> <th>Jogador</th> <th>Voltas</th> <th>Tempo</th> <th>Data</th> </tr>
+		</thead>';
 
-while($row = $result->fetchArray()){
-    echo "<td>" . $row['username'] . "<td>" . $row['laps'] . "<td>" . $row['timing'] . "<td>" . $row['time'] . "</td></tr>";
+	while($row = $result->fetchArray()){
+		echo "<td>" . $row['username'] . "<td>" . $row['laps'] . "<td>" . $row['timing'] . "<td>" . $row['time'] . "</td></tr>";
+	}
+	echo '</table>';
 }
-echo '</table>';
 ?>
 
 

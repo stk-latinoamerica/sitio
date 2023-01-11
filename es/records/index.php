@@ -1,3 +1,15 @@
+<?php
+
+include $_SERVER["DOCUMENT_ROOT"] . '/assets/records_index_bracers.php';
+
+$servers= setServers($_POST["servers"]);
+$laps	= setLaps($_POST["laps"]);
+$reverse= setReverse($_POST["reverse"]); 
+$mode	= setMode($_POST["mode"]);
+$tracks	= setTracks($_POST["venue"]);
+
+
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -22,24 +34,7 @@
       Records
     </h2>
 
-<?php
-
-function setLaps($laps)
-{
-	if (!($laps > 0 && $laps <= 20) && ($laps != 50)) return 'dlaps';
-	else return $laps;
-}
-
-$servers= $_POST["servers"] ?? 'ALL';
-$laps	= setLaps($_POST["laps"]);
-$reverse= $_POST["reverse"] ?? 'normal'; 
-$mode	= $_POST["mode"] ?? 'normal';
-$tracks	= $_POST["venue"] ?? 'default';
-
-
-?>
-
-<div class="box95 rowbox records_form">
+<div>
 <form action ="index.php" method="POST">
 
         <h4>Servidores:
@@ -50,14 +45,14 @@ $tracks	= $_POST["venue"] ?? 'default';
 
 	<input type="hidden" name="reverse" value="normal" />
 	<input type="hidden" name="mode" value="normal" />
-	<ul style="margin-left: -5rem">
-	  <h4><li class="modeLi">Dirección:
-	    <input type="checkbox" name="reverse" class="reverseBox" value="reverse" <?php if ($reverse == 'reverse') echo 'checked' ?>>
-	    <label for="reverse" class="modeLabel"><span class="on">Normal</span><span class="off">Inversa</ span></label>
-	  </li></h4>
+	<ul>
 	  <h4><li class="modeLi">Modo:
 	    <input type="checkbox" name="mode" class="modeBox" value="time-trial" <?php if ($mode == 'time-trial') echo 'checked' ?>>
 	    <label for="mode" class="modeLabel"><span class="on">Normal</span><span class="off">Contrarreloj</ span></label>
+	  </li>
+	  <li class="modeLi">Dirección:
+	    <input type="checkbox" name="reverse" class="reverseBox" value="reverse" <?php if ($reverse == 'reverse') echo 'checked' ?>>
+	    <label for="reverse" class="modeLabel"><span class="on">Normal</span><span class="off">Inversa</ span></label>
 	  </li></h4>
 	</ul>
 

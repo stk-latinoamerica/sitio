@@ -1,5 +1,41 @@
 <?php
 
+function setServers($getvar, $postvar)
+{
+	if ($getvar == 'MIAMI' || $getvar == 'BRASIL' || $getvar == 'ALL')
+		return $getvar;
+	else if ($postvar == 'MIAMI' || $postvar == 'BRASIL' || $postvar == 'ALL')
+		return $postvar;
+	else return 'ALL';
+}
+
+function setLaps($getvar, $postvar)
+{
+	if (($getvar > 0 && $getvar <= 20) || $getvar == 50)
+		return $getvar;
+	else if (($postvar > 0 && $getvar <= 20) || $postvar == 50)
+		return $postvar;
+	else return 'dlaps';
+}
+
+function setReverse($getvar, $postvar)
+{
+	if ($getvar == 'normal' || $getvar == 'reverse')
+		return $getvar;
+	else if ($postvar == 'normal' || $postvar == 'reverse')
+		return $postvar;
+	else return 'normal';
+}
+
+function setMode($getvar, $postvar)
+{
+	if ($getvar == 'normal' || $getvar == 'time-trial')
+		return $getvar;
+	else if ($postvar == 'normal' || $postvar == 'time-trial')
+		return $postvar;
+	else return 'normal';
+}
+
 function setTrack($getvar) {
 	if ($getvar)
 	{
@@ -8,7 +44,7 @@ function setTrack($getvar) {
 	return $_POST["track"];
 }
 
-function sanityCheck($var)
+function trackCheck($var)
 {
   switch ($var)
   {
@@ -521,12 +557,9 @@ function sanityCheck($var)
     case 'volcano_island':
     case 'xr591':
     case 'zengarden':
-    case '':
-      return true;
-      break;
+      return $var;
     default:
-      exit('<h2>Variáveis inválidas</h2>');
-      return false;
+      return 'abyss';
   }
 }
 
