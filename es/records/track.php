@@ -69,7 +69,7 @@ echo "<img src='/assets/screenshots/" . $track . ".jpg' > ";
 	</ul>
 
         <h4>Vueltas:
-	<input type="number" name="laps" min="0" max="20"> 	<input type="checkbox" name="laps" value="50"> 50 Vueltas	    
+	<input type="number" name="laps" min="0" max="20" <?php if ($laps > 0 && $laps <=20) echo 'value="' . $laps . '"'; ?>> 	<input type="checkbox" name="laps" value="50" <?php if ($laps == 50) echo 'checked'?>> 50 Vueltas	    
         </h4>
 
 

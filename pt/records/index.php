@@ -8,7 +8,6 @@ $reverse= setReverse($_POST["reverse"]);
 $mode	= setMode($_POST["mode"]);
 $tracks	= setTracks($_POST["venue"]);
 
-
 ?>
 
 <!DOCTYPE html>
@@ -59,14 +58,15 @@ $tracks	= setTracks($_POST["venue"]);
 	
 
         <h4>Número de voltas:
-	<input type="number" name="laps" min="0" max="20"> 	<input type="checkbox" name="laps" value="50"> 50 voltas	    
+	<input type="number" name="laps" min="0" max="20" <?php if ($laps > 0 && $laps <=20) echo 'value="' . $laps .'"';?> > 	<input type="checkbox" name="laps" value="50" <?php if ($laps == 50) echo 'checked'; ?> > 50 voltas	    
         </h4>
 
         <h4>Tipo de pistas:
         <select name="venue">
-	  <option value="default">Oficiais</option>
-	  <option value="addons">Complementares</option>
-	  <option value="assorted_addons">Complementares especiais</option>
+	  <option value="default" <?php if ($tracks == 'default') echo 'selected'; ?>>Oficiais</option>
+	  <option value="addons" <?php if ($tracks == 'addons') echo 'selected'; ?>>Complementares</option>
+	  <option value="featured" <?php if ($tracks == 'featured') echo 'selected'; ?>>Recomendadas</option>
+	  <option value="rated" <?php if ($tracks == 'rated') echo 'selected'; ?>>Bem avaliadas</option>
         </h4>
 
 <input style='margin-top: 0.5rem' type="submit" value="Filtrar"></div>
@@ -81,11 +81,12 @@ if ($mode == 'normal')
 	echo "normal";
 	else echo "sem itens";
 echo " ⭐️ Pistas: ";
-if ($tracks == 'default')
-	echo " oficiais";
-	else if ($tracks == 'addons')
-		echo " complementares";
-		else echo " mais recomendadas";
+switch ($tracks) {
+	case 'addons': echo ' complementares'; break;
+	case 'rated': echo ' bem avaliadas'; break;
+	case 'featured': echo ' recomendadas'; break;
+	default: echo ' oficiais';
+}
 echo " ⭐️ Sentido: "; 
 if ($reverse == 'normal') 
 	echo "normal";
@@ -113,8 +114,10 @@ class MyDB extends SQLite3
 function setVenue($tracks) {
 	switch ($tracks)
 	{
-		case 'default': return "NOT LIKE 'addon_%'";
-		default: return "LIKE 'addon_%'";
+		case 'default': return "venue NOT LIKE 'addon_%'";
+		case 'rated': return "well_rated = 'YES'";
+		case 'featured': return "featured = 'YES'";
+		default: return "venue LIKE 'addon_%'";
 	}
 }
 
@@ -122,16 +125,16 @@ $db = new MyDB();
 
 
 
-$result = $db->query("SELECT fullname, venue, laps, username, (CASE WHEN (result%60 < 10) THEN (CAST(result/60 as INT) || ':0' || CAST(ROUND(MOD(result,60),4) as TEXT)) ELSE (CAST(result/60 AS INT)) || ':' || CAST(result%60 AS TEXT) END) as timing, time FROM '" . $servers . "' WHERE (venue " . setVenue($tracks)  . " AND laps = " . $laps . " AND mode = '" . $mode . "' AND reverse = '" . $reverse . "') GROUP BY venue HAVING MIN(result)") ?? '';
+$result = $db->query("SELECT fullname, venue, laps, username, (CASE WHEN (result%60 < 10) THEN (CAST(result/60 as INT) || ':0' || CAST(ROUND(MOD(result,60),4) as TEXT)) ELSE (CAST(result/60 AS INT)) || ':' || CAST(result%60 AS TEXT) END) as timing, time FROM '" . $servers . "' WHERE (" . setVenue($tracks)  . " AND laps = " . $laps . " AND mode = '" . $mode . "' AND reverse = '" . $reverse . "') GROUP BY venue HAVING MIN(result)") ?? ' ';
 
-//if ($result->numRows() > 0)
+if (isset($result))
 {
 	while($row = $result->fetchArray()){
 		echo "<tr><td> <a href='track.php?track=" . $row['venue'] . "&servers=" . $servers . "&laps=" . $laps . "&reverse=" . $reverse . "&mode=" . $mode . "' name=\"track\" value=\"" . $row['venue'] ."\" > ". $row['fullname'] . "</a><td>" . $row['laps'] . "<td>" . $row['username'] . "<td>" . $row['timing'] . "<td>" . $row['time'] . "</td></tr>";
 	}
 	echo '</table>';
 }
-//else echo "<h4>Nenhum resultado</h4>";
+else echo "<h4>Nenhum resultado</h4>";
 ?>
 
 </form>

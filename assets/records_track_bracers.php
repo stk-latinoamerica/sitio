@@ -268,6 +268,7 @@ function trackCheck($var)
     case 'addon_llsp01_1':
     case 'addon_llsp02':
     case 'addon_llsp03':
+    case 'addon_llsp04':
     case 'addon_lm-track':
     case 'addon_lost-chasm':
     case 'addon_lost-forest':
@@ -366,6 +367,7 @@ function trackCheck($var)
     case 'addon_quiet-breeze':
     case 'addon_racetrack':
     case 'addon_racetrack-remake':
+    case 'addon_rainbow-in-a-prison':
     case 'addon_rally-fantasy':
     case 'addon_rammer-s-playground':
     case 'addon_random-roads':
@@ -491,6 +493,7 @@ function trackCheck($var)
     case 'addon_volcan-island--2020-upgrade-':
     case 'addon_volcan-island--2020-upgrade-_1':
     case 'addon_volcan-island--iariazlee-_1':
+    case 'addon_volcanic-arena':
     case 'addon_volcano-island--edit-':
     case 'addon_volcano-remake':
     case 'addon_voxel-village':

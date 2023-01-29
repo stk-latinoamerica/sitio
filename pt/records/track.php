@@ -70,7 +70,7 @@ echo "<img src='/assets/screenshots/" . $track . ".jpg' > ";
 	
 
         <h4>Número de voltas:
-	<input type="number" name="laps" min="0" max="20"> 	<input type="checkbox" name="laps" value="50"> 50 voltas	    
+	<input type="number" name="laps" min="0" max="20" <?php if ($laps > 0 && $laps <=20) echo 'value="' . $laps . '"'; ?>> 	<input type="checkbox" name="laps" value="50" <?php if ($laps == 50) echo 'checked'?>> 50 voltas	    
         </h4>
 
 

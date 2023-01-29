@@ -21,7 +21,7 @@ function setMode($mode)
 }
 function setTracks($tracks)
 {
-	if ($tracks != 'default' && $tracks != 'addons' && $tracks != 'assorted_addons')
+	if ($tracks != 'default' && $tracks != 'addons' && $tracks != 'rated' && $tracks != 'featured')
 	{
 		return 'default';
 	}
